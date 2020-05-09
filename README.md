@@ -63,7 +63,7 @@ When push is made, message received can be like:
    "message":"Pushing to repository.",
    "user":"test",
    "repo":"test",
-   "path":"/path/to/repo"
+   "path":"/path/to/repo",
    "type":"push",
    "ref_oid":"refs/heads/master",
    "old_oid":"6bca08ae530b8e9eaac62d408c4f0b3a2826f7ea",
