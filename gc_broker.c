@@ -126,6 +126,8 @@ uint8_t broker_router(gc_controller* gc, redisReply* message){
 	
 	char *data;
 	
+	printf("Event occured!\n");
+	
 	if (bson_iter_init (&iter, gc->bson)) {
 		while (bson_iter_next (&iter)) {
 			if(strcmp(bson_iter_key(&iter), "repo") == 0){
@@ -174,7 +176,7 @@ uint8_t broker_router(gc_controller* gc, redisReply* message){
 		}
 	}
 	
-	if(found_repo && action == PUSH){
+	if(found_repo && (action == PUSH || action == PULL)){
 		printf("Tryinng: %s\n", repo->str);
 						
 		broker->reply = redisCommand(broker->redis, "GET %s", repo->str);
@@ -191,13 +193,15 @@ uint8_t broker_router(gc_controller* gc, redisReply* message){
 			lua_getglobal(L, "trigger");
 			lua_pushstring(L, data);			
 			
-			if(lua_pcall(L, 1, 1,0) != 0)
+			if(lua_pcall(L, 1, 0, 0) != 0)
 				printf("error running function `f': %s",lua_tostring(L, -1));
-			
+						
 			lua_close(L);
 			
 			broker_reply_clean(broker);
 		} 
+	} else {
+		printf("No trigger was activated!\n");
 	}
 	
 	string_clean(repo);
