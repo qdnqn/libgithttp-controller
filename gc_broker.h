@@ -8,6 +8,10 @@
 
 #if defined(GH_USEBROOKER)
 #include "hiredis.h"
+
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
 #endif
 
 #define PUSH 1

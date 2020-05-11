@@ -1,6 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <string.h>
 
 #include "gc_config.h"
 
@@ -16,9 +20,9 @@
 #include "gc_broker.h"
 #include "gc_database.h"
 
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
 #endif
 
 gc_broker* broker_init(gc_controller* gc){
@@ -185,8 +189,9 @@ uint8_t broker_router(gc_controller* gc, redisReply* message){
 			lua_State* L;
 
 			L = luaL_newstate();
-			
+						
 			luaL_openlibs(L); 
+						
 			if (luaL_dostring(L, broker->reply->str))
         printf("cannot run configuration file: %s",lua_tostring(L, -1));
                  
@@ -194,7 +199,7 @@ uint8_t broker_router(gc_controller* gc, redisReply* message){
 			lua_pushstring(L, data);			
 			
 			if(lua_pcall(L, 1, 0, 0) != 0)
-				printf("error running function `f': %s",lua_tostring(L, -1));
+				printf("error running function `f': %s \n", lua_tostring(L, -1));
 						
 			lua_close(L);
 			
